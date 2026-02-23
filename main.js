@@ -111,7 +111,39 @@ function setupEventListeners() {
         importBtn.addEventListener('click', () => importFileInput.click());
         importFileInput.addEventListener('change', importData);
     }
+
+    // Mobile Sidebar UI
+    const menuBtn = document.getElementById('menu-toggle-btn');
+    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+    const overlay = document.getElementById('sidebar-overlay');
+    const sidebar = document.getElementById('sidebar');
+
+    const toggleSidebar = (show) => {
+        if (show) {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        } else {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+    };
+
+    if (menuBtn) menuBtn.addEventListener('click', () => toggleSidebar(true));
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => toggleSidebar(false));
+    if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
+
+    // Auto-close sidebar on game selection on mobile
+    const originalSelectGame = window.selectGame;
+    window.selectGame = (id) => {
+        if (window.innerWidth <= 768) {
+            toggleSidebar(false);
+        }
+        selectGameInternal(id);
+    };
 }
+
+// Rename the internal function to avoid recursion if we want to wrap it
+// Wait, the selectGame is already global in previous versions? No, let's just add it to selectGame itself.
 
 function exportData() {
     const dataStr = JSON.stringify(state, null, 2);
@@ -189,6 +221,14 @@ function selectGame(id) {
     updateDashboard();
     renderHistory();
     saveState();
+
+    // Close mobile sidebar if open
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (window.innerWidth <= 768 && sidebar) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+    }
 }
 
 // --- Rarity Inputs ---

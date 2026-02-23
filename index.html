@@ -15,10 +15,16 @@
 
 <body class="dark-theme">
     <div class="app-container">
+        <!-- Mobile Menu Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h1 class="app-title">Gacha Tracker</h1>
+                <div class="header-top">
+                    <h1 class="app-title">Gacha Tracker</h1>
+                    <button id="close-sidebar-btn" class="btn-icon mobile-only">✕</button>
+                </div>
             </div>
             <nav class="game-list">
                 <ul id="game-list-items">
@@ -40,7 +46,10 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="main-header">
-                <h2 id="current-game-title">Select or Add a Game</h2>
+                <div class="header-left">
+                    <button id="menu-toggle-btn" class="btn-icon mobile-only">☰</button>
+                    <h2 id="current-game-title">Select or Add a Game</h2>
+                </div>
                 <div class="header-actions">
                     <button id="edit-game-btn" class="btn-icon">⚙</button>
                 </div>
