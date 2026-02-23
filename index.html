@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gacha-Log Tracker (仮)</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="app-title">Gacha Tracker</h1>
+            </div>
+            <nav class="game-list">
+                <ul id="game-list-items">
+                    <!-- Games will be injected here -->
+                </ul>
+                <button id="add-game-btn" class="btn-secondary">+ Add New Game</button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p class="footer-label">データ管理</p>
+                <div class="data-actions">
+                    <button id="export-btn" class="btn-ghost small-btn" title="データをファイルに保存">エクスポート</button>
+                    <button id="import-btn" class="btn-ghost small-btn" title="ファイルから読み込み">インポート</button>
+                    <input type="file" id="import-file" style="display: none" accept=".json">
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h2 id="current-game-title">Select or Add a Game</h2>
+                <div class="header-actions">
+                    <button id="edit-game-btn" class="btn-icon">⚙</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid">
+                <!-- Analysis Card -->
+                <div class="card analysis-card">
+                    <h3>排出率分析</h3>
+                    <div class="stats-overview">
+                        <div class="stat-item">
+                            <span class="label">総試行回数</span>
+                            <span id="total-pulls" class="value">0</span>
+                        </div>
+                        <div id="rarity-totals-summary" class="rarity-totals-summary">
+                            <!-- Rarity specific totals will be injected here -->
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="rate-chart"></canvas>
+                    </div>
+                    <div id="stats-detail-list" class="stats-detail-list">
+                        <!-- Detailed stats will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Input Card -->
+                <div class="card input-card">
+                    <h3>ガチャ記録</h3>
+                    <div class="input-form">
+                        <div class="form-group">
+                            <label for="pull-date">日付</label>
+                            <div class="input-with-button">
+                                <input type="date" id="pull-date">
+                                <button id="set-now-btn" class="btn-secondary small-btn" title="今日の日付を設定">📅</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="total-pull-count">総引いた回数 (例: 10)</label>
+                            <input type="number" id="total-pull-count" value="10" min="1">
+                        </div>
+                        <div class="rarity-inputs-grid" id="rarity-inputs-container">
+                            <!-- Rarity number inputs will be injected here -->
+                        </div>
+                        <div class="form-group mt-1">
+                            <label for="pull-memo">メモ</label>
+                            <input type="text" id="pull-memo" placeholder="限定キャラ名など">
+                        </div>
+                        <button id="submit-pull" class="btn-primary w-full">記録する</button>
+                    </div>
+                </div>
+
+                <!-- History Card -->
+                <div class="card history-card full-width">
+                    <h3>最近の履歴</h3>
+                    <div class="table-wrapper">
+                        <table id="history-table">
+                            <thead>
+                                <tr>
+                                    <th>日時</th>
+                                    <th>回数</th>
+                                    <th>結果</th>
+                                    <th>メモ</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <!-- History items will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Settings -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">ゲーム設定</h3>
+            <form id="game-settings-form">
+                <div class="form-group">
+                    <label>ゲーム名</label>
+                    <input type="text" id="setting-game-name" required>
+                </div>
+                <div class="form-group">
+                    <label>レアリティ設定 (名称 / 確率% / 色)</label>
+                    <div id="rarity-settings-list">
+                        <!-- Rarity settings will be injected here -->
+                    </div>
+                    <button type="button" id="add-rarity-row" class="btn-secondary">+ レアリティ追加</button>
+                </div>
+                <div class="modal-actions space-between">
+                    <button type="button" id="delete-game-btn" class="btn-danger">このゲームを削除</button>
+                    <div class="flex-gap">
+                        <button type="button" id="close-modal" class="btn-ghost">キャンセル</button>
+                        <button type="submit" class="btn-primary">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
