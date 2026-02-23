@@ -88,17 +88,6 @@ body {
 .data-actions .btn-ghost {
     font-size: 0.75rem;
     padding: 0.4rem 0.6rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 0.25rem;
-    color: var(--text-secondary);
-    text-decoration: none;
-    cursor: pointer;
-    border: 1px solid var(--border);
-}
-
-.data-actions .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--accent);
 }
 
 .app-title {
@@ -191,7 +180,7 @@ body {
     border-radius: 0.5rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
 .btn-primary:hover {
@@ -207,10 +196,44 @@ body {
     border-radius: 0.5rem;
     width: 100%;
     cursor: pointer;
+    transition: background 0.2s;
 }
 
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-ghost {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background: #ef4444;
+    color: white;
 }
 
 .btn-icon {
@@ -221,6 +244,7 @@ body {
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 50%;
+    transition: background 0.2s;
 }
 
 .btn-icon:hover {

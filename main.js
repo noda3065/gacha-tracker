@@ -380,7 +380,7 @@ function renderHistory() {
                 const color = game.rarities.find(r => r.name === name)?.color || '#fff';
                 return `<span style="color: ${color}; font-weight: bold;">${name}x${count}</span>`;
             }).join(', ') || 'なし';
-        row.innerHTML = `<td>${h.timestamp}</td><td>${h.totalCount}</td><td>${resultString}</td><td>${h.memo}</td><td><button class="btn-ghost" onclick="deleteHistory('${h.id}')">削除</button></td>`;
+        row.innerHTML = `<td>${h.timestamp}</td><td>${h.totalCount}</td><td>${resultString}</td><td>${h.memo}</td><td><button class="btn-danger small-btn" onclick="deleteHistory('${h.id}')">削除</button></td>`;
         body.appendChild(row);
     });
 }
