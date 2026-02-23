@@ -69,68 +69,70 @@ function saveState() {
 
 // --- Event Listeners ---
 function setupEventListeners() {
-    const addBtn = document.getElementById('add-game-btn');
-    if (addBtn) addBtn.addEventListener('click', () => openModal());
+    console.log('Setting up Event Listeners...');
+    try {
+        const safeAddListener = (id, event, callback) => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener(event, callback);
+            else console.warn(`Element with id "${id}" not found.`);
+        };
 
-    const editBtn = document.getElementById('edit-game-btn');
-    if (editBtn) editBtn.addEventListener('click', () => {
-        if (state.currentGameId) openModal(state.currentGameId);
-    });
+        safeAddListener('add-game-btn', 'click', () => openModal());
+        safeAddListener('edit-game-btn', 'click', () => {
+            if (state.currentGameId) openModal(state.currentGameId);
+        });
+        safeAddListener('close-modal', 'click', () => closeModal());
 
-    const closeBtn = document.getElementById('close-modal');
-    if (closeBtn) closeBtn.addEventListener('click', () => closeModal());
-
-    const settingsForm = document.getElementById('game-settings-form');
-    if (settingsForm) settingsForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        saveGameSettings();
-    });
-
-    const deleteBtn = document.getElementById('delete-game-btn');
-    if (deleteBtn) deleteBtn.addEventListener('click', () => {
-        const gameId = document.getElementById('settings-modal').dataset.gameId;
-        if (gameId) deleteGame(gameId);
-    });
-
-    const addRowBtn = document.getElementById('add-rarity-row');
-    if (addRowBtn) addRowBtn.addEventListener('click', () => addRarityRow());
-
-    const submitBtn = document.getElementById('submit-pull');
-    if (submitBtn) submitBtn.addEventListener('click', () => submitPull());
-
-    const nowBtn = document.getElementById('set-now-btn');
-    if (nowBtn) nowBtn.addEventListener('click', () => setNowDate());
-
-    // Data handling
-    const exportBtn = document.getElementById('export-btn');
-    if (exportBtn) exportBtn.addEventListener('click', exportData);
-
-    const importBtn = document.getElementById('import-btn');
-    const importFileInput = document.getElementById('import-file');
-    if (importBtn && importFileInput) {
-        importBtn.addEventListener('click', () => importFileInput.click());
-        importFileInput.addEventListener('change', importData);
-    }
-
-    // Mobile Sidebar UI
-    const menuBtn = document.getElementById('menu-toggle-btn');
-    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-    const overlay = document.getElementById('sidebar-overlay');
-    const sidebar = document.getElementById('sidebar');
-
-    const toggleSidebar = (show) => {
-        if (show) {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-        } else {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
+        const settingsForm = document.getElementById('game-settings-form');
+        if (settingsForm) {
+            settingsForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveGameSettings();
+            });
         }
-    };
 
-    if (menuBtn) menuBtn.addEventListener('click', () => toggleSidebar(true));
-    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => toggleSidebar(false));
-    if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
+        safeAddListener('delete-game-btn', 'click', () => {
+            const gameId = document.getElementById('settings-modal').dataset.gameId;
+            if (gameId) deleteGame(gameId);
+        });
+
+        safeAddListener('add-rarity-row', 'click', () => addRarityRow());
+        safeAddListener('submit-pull', 'click', () => submitPull());
+        safeAddListener('set-now-btn', 'click', () => setNowDate());
+
+        // Data handling
+        safeAddListener('export-btn', 'click', exportData);
+
+        const importBtn = document.getElementById('import-btn');
+        const importFileInput = document.getElementById('import-file');
+        if (importBtn && importFileInput) {
+            importBtn.addEventListener('click', () => importFileInput.click());
+            importFileInput.addEventListener('change', importData);
+        }
+
+        // Mobile Sidebar UI
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        const toggleSidebar = (show) => {
+            if (!sidebar || !overlay) return;
+            if (show) {
+                sidebar.classList.add('open');
+                overlay.classList.add('active');
+            } else {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        };
+
+        safeAddListener('menu-toggle-btn', 'click', () => toggleSidebar(true));
+        safeAddListener('close-sidebar-btn', 'click', () => toggleSidebar(false));
+        if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
+
+    } catch (e) {
+        console.error('Error in setupEventListeners:', e);
+        throw e; // Rethrow to be caught by DOMContentLoaded
+    }
 }
 
 function exportData() {
