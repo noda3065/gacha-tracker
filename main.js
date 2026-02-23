@@ -131,19 +131,7 @@ function setupEventListeners() {
     if (menuBtn) menuBtn.addEventListener('click', () => toggleSidebar(true));
     if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => toggleSidebar(false));
     if (overlay) overlay.addEventListener('click', () => toggleSidebar(false));
-
-    // Auto-close sidebar on game selection on mobile
-    const originalSelectGame = window.selectGame;
-    window.selectGame = (id) => {
-        if (window.innerWidth <= 768) {
-            toggleSidebar(false);
-        }
-        selectGameInternal(id);
-    };
 }
-
-// Rename the internal function to avoid recursion if we want to wrap it
-// Wait, the selectGame is already global in previous versions? No, let's just add it to selectGame itself.
 
 function exportData() {
     const dataStr = JSON.stringify(state, null, 2);
