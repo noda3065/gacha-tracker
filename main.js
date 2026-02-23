@@ -11,29 +11,47 @@ let state = {
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    loadState();
-    setupEventListeners();
-    renderSidebar();
+    console.log('Gacha-Log Tracker Initializing...');
+    try {
+        loadState();
+        setupEventListeners();
+        renderSidebar();
 
-    setNowDate();
+        setNowDate();
 
-    if (state.currentGameId) {
-        selectGame(state.currentGameId);
-    } else if (state.games.length > 0) {
-        selectGame(state.games[0].id);
+        if (state.currentGameId) {
+            selectGame(state.currentGameId);
+        } else if (state.games.length > 0) {
+            selectGame(state.games[0].id);
+        }
+        console.log('Gacha-Log Tracker Initialized Successfully');
+        document.title = "Gacha-Log Tracker (Ready)"; // Visual indicator
+    } catch (error) {
+        console.error('Initialization failed:', error);
+        alert('ツールの起動に失敗しました。ブラウザのキャッシュをクリアして再試行してください。');
     }
 });
 
 // --- Local Storage ---
 function loadState() {
-    const saved = localStorage.getItem('gacha_tracker_state');
-    if (saved) {
-        state = JSON.parse(saved);
-    } else {
+    try {
+        const saved = localStorage.getItem('gacha_tracker_state');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Basic structure validation
+            if (parsed && typeof parsed === 'object') {
+                state = { ...state, ...parsed };
+            }
+        }
+    } catch (e) {
+        console.warn('Failed to load state from localStorage:', e);
+    }
+
+    if (!state.games || state.games.length === 0) {
         state.games = [
             {
                 id: '1',
-                name: 'Sample Game',
+                name: 'サンプルゲーム',
                 rarities: [
                     { name: 'SSR', rate: 3, color: '#fbbf24' },
                     { name: 'SR', rate: 12, color: '#a855f7' },
@@ -51,37 +69,55 @@ function saveState() {
 
 // --- Event Listeners ---
 function setupEventListeners() {
-    document.getElementById('add-game-btn').addEventListener('click', () => openModal());
-    document.getElementById('edit-game-btn').addEventListener('click', () => {
+    const addBtn = document.getElementById('add-game-btn');
+    if (addBtn) addBtn.addEventListener('click', () => openModal());
+
+    const editBtn = document.getElementById('edit-game-btn');
+    if (editBtn) editBtn.addEventListener('click', () => {
         if (state.currentGameId) openModal(state.currentGameId);
     });
-    document.getElementById('close-modal').addEventListener('click', () => closeModal());
 
-    document.getElementById('game-settings-form').addEventListener('submit', (e) => {
+    const closeBtn = document.getElementById('close-modal');
+    if (closeBtn) closeBtn.addEventListener('click', () => closeModal());
+
+    const settingsForm = document.getElementById('game-settings-form');
+    if (settingsForm) settingsForm.addEventListener('submit', (e) => {
         e.preventDefault();
         saveGameSettings();
     });
 
-    document.getElementById('delete-game-btn').addEventListener('click', () => {
+    const deleteBtn = document.getElementById('delete-game-btn');
+    if (deleteBtn) deleteBtn.addEventListener('click', () => {
         const gameId = document.getElementById('settings-modal').dataset.gameId;
         if (gameId) deleteGame(gameId);
     });
 
-    document.getElementById('add-rarity-row').addEventListener('click', () => addRarityRow());
-    document.getElementById('submit-pull').addEventListener('click', () => submitPull());
-    document.getElementById('set-now-btn').addEventListener('click', () => setNowDate());
+    const addRowBtn = document.getElementById('add-rarity-row');
+    if (addRowBtn) addRowBtn.addEventListener('click', () => addRarityRow());
+
+    const submitBtn = document.getElementById('submit-pull');
+    if (submitBtn) submitBtn.addEventListener('click', () => submitPull());
+
+    const nowBtn = document.getElementById('set-now-btn');
+    if (nowBtn) nowBtn.addEventListener('click', () => setNowDate());
 
     // Data handling
-    document.getElementById('export-btn').addEventListener('click', exportData);
-    document.getElementById('import-btn').addEventListener('click', () => document.getElementById('import-file').click());
-    document.getElementById('import-file').addEventListener('change', importData);
+    const exportBtn = document.getElementById('export-btn');
+    if (exportBtn) exportBtn.addEventListener('click', exportData);
+
+    const importBtn = document.getElementById('import-btn');
+    const importFileInput = document.getElementById('import-file');
+    if (importBtn && importFileInput) {
+        importBtn.addEventListener('click', () => importFileInput.click());
+        importFileInput.addEventListener('change', importData);
+    }
 }
 
 function exportData() {
     const dataStr = JSON.stringify(state, null, 2);
     const blob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = `gacha-log-tracker-${new Date().toISOString().slice(0, 10)}.json`;
@@ -243,6 +279,10 @@ function renderStatsDetail(rarities, actualCounts, totalPulls) {
 }
 
 function renderChart(labels, expected, actual, colors) {
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js is not loaded yet.');
+        return;
+    }
     const ctx = document.getElementById('rate-chart').getContext('2d');
 
     if (rateChart) {
